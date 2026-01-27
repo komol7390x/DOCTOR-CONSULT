@@ -1,6 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { completeAppointmentSchema, createAppointmentSchema, createPrescriptionSchema } from "../database/appointment.schema";
-import { APPOINTMENT_STATUS, USER_ROLE } from "../core/enums";
+import {
+  createAppointmentSchema,
+  completeAppointmentSchema,
+  createPrescriptionSchema,
+} from "../../database/appointment.schema";
+import { USER_ROLE, APPOINTMENT_STATUS } from "../../core/enums";
+import { ERROR_MESSAGES } from "../../core/constants/error-messages";
 
 const prisma = new PrismaClient();
 
@@ -12,16 +17,14 @@ export class AppointmentService {
     const endTime = new Date(appointmentData.endTime);
     const now = new Date();
 
-    // Validate time logic
     if (startTime <= now) {
-      throw new Error("Cannot book appointments in the past");
+      throw new Error(ERROR_MESSAGES.APPOINTMENT_PAST_BOOKING);
     }
 
     if (endTime <= startTime) {
-      throw new Error("End time must be after start time");
+      throw new Error(ERROR_MESSAGES.APPOINTMENT_INVALID_TIME);
     }
 
-    // Check if doctor exists and is a doctor
     const doctor = await prisma.user.findFirst({
       where: {
         id: appointmentData.doctorId,
@@ -30,10 +33,9 @@ export class AppointmentService {
     });
 
     if (!doctor) {
-      throw new Error("The specified doctor does not exist");
+      throw new Error(ERROR_MESSAGES.DOCTOR_NOT_FOUND);
     }
 
-    // Check if patient exists and is a patient
     const patient = await prisma.user.findFirst({
       where: {
         id: appointmentData.patientId,
@@ -42,10 +44,9 @@ export class AppointmentService {
     });
 
     if (!patient) {
-      throw new Error("The specified patient does not exist");
+      throw new Error(ERROR_MESSAGES.PATIENT_NOT_FOUND);
     }
 
-    // Check for time conflicts
     const conflictingAppointment = await prisma.appointment.findFirst({
       where: {
         doctorId: appointmentData.doctorId,
@@ -74,7 +75,7 @@ export class AppointmentService {
     });
 
     if (conflictingAppointment) {
-      throw new Error("The doctor is already booked at this time");
+      throw new Error(ERROR_MESSAGES.APPOINTMENT_DOCTOR_BUSY);
     }
 
     const appointment = await prisma.appointment.create({
@@ -117,11 +118,11 @@ export class AppointmentService {
     });
 
     if (!appointment) {
-      throw new Error("The specified appointment does not exist");
+      throw new Error(ERROR_MESSAGES.APPOINTMENT_NOT_FOUND);
     }
 
     if (appointment.status !== APPOINTMENT_STATUS.SCHEDULED) {
-      throw new Error("Only scheduled appointments can be completed");
+      throw new Error(ERROR_MESSAGES.APPOINTMENT_ALREADY_COMPLETED);
     }
 
     const updatedAppointment = await prisma.appointment.update({
@@ -143,22 +144,19 @@ export class AppointmentService {
     });
 
     if (!appointment) {
-      throw new Error("The specified appointment does not exist");
+      throw new Error(ERROR_MESSAGES.APPOINTMENT_NOT_FOUND);
     }
 
     if (appointment.status !== APPOINTMENT_STATUS.COMPLETED) {
-      throw new Error(
-        "Prescriptions can only be created for completed appointments",
-      );
+      throw new Error(ERROR_MESSAGES.PRESCRIPTION_INCOMPLETE_APPOINTMENT);
     }
 
-    // Check if prescription already exists for this appointment
     const existingPrescription = await prisma.prescription.findFirst({
       where: { appointmentId },
     });
 
     if (existingPrescription) {
-      throw new Error("A prescription already exists for this appointment");
+      throw new Error(ERROR_MESSAGES.PRESCRIPTION_ALREADY_EXISTS);
     }
 
     const prescription = await prisma.prescription.create({

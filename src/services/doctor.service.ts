@@ -1,5 +1,7 @@
-import { PrismaClient, UserRole } from '@prisma/client';
-import { getDoctorsQuerySchema } from '../schemas/doctor.schema';
+import { PrismaClient } from "@prisma/client";
+import { USER_ROLE } from "../core/enums";
+import { getDoctorsQuerySchema } from "../database/doctor.schema";
+
 
 const prisma = new PrismaClient();
 
@@ -9,18 +11,14 @@ export class DoctorService {
 
     const doctors = await prisma.user.findMany({
       where: {
-        role: UserRole.DOCTOR,
+        role: USER_ROLE.DOCTOR,
         ...(specialty && {
           doctorProfile: {
             specialty: {
               contains: specialty,
-              mode: 'insensitive',
             },
           },
         }),
-      },
-      include: {
-        doctorProfile: true,
       },
       select: {
         id: true,
@@ -36,14 +34,11 @@ export class DoctorService {
     return { doctors };
   }
 
-  async getDoctorById(id: string) {
+  async getDoctorById(id: number) {
     const doctor = await prisma.user.findFirst({
       where: {
         id,
-        role: UserRole.DOCTOR,
-      },
-      include: {
-        doctorProfile: true,
+        role: USER_ROLE.DOCTOR,
       },
       select: {
         id: true,
@@ -59,7 +54,7 @@ export class DoctorService {
     return doctor;
   }
 
-  async getDoctorAppointments(doctorId: string) {
+  async getDoctorAppointments(doctorId: number) {
     const appointments = await prisma.appointment.findMany({
       where: {
         doctorId,
@@ -76,7 +71,7 @@ export class DoctorService {
         },
       },
       orderBy: {
-        startTime: 'asc',
+        startTime: "asc",
       },
     });
 

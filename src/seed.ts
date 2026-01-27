@@ -1,25 +1,26 @@
-import { PrismaClient, UserRole, AppointmentStatus } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { PrismaClient } from "@prisma/client";
+import { APPOINTMENT_STATUS, USER_ROLE } from "./core/enums";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding...');
+  console.log("🌱 Starting database seeding...");
 
   // Create doctors
   const drSmith = await prisma.user.create({
     data: {
-      email: 'dr.smith@doctor.com',
-      firstName: 'John',
-      lastName: 'Smith',
-      phone: '+1234567890',
-      role: UserRole.DOCTOR,
+      email: "dr.smith@doctor.com",
+      firstName: "John",
+      lastName: "Smith",
+      phone: "+1234567890",
+      role: USER_ROLE.DOCTOR,
       doctorProfile: {
         create: {
-          specialty: 'Cardiology',
+          specialty: "Cardiology",
           experience: 15,
-          consultationPrice: 150.00,
-          description: 'Specialist in cardiovascular diseases with 15 years of experience',
+          consultationPrice: 150.0,
+          description:
+            "Specialist in cardiovascular diseases with 15 years of experience",
         },
       },
     },
@@ -27,17 +28,17 @@ async function main() {
 
   const drJohnson = await prisma.user.create({
     data: {
-      email: 'dr.johnson@doctor.com',
-      firstName: 'Sarah',
-      lastName: 'Johnson',
-      phone: '+1234567891',
-      role: UserRole.DOCTOR,
+      email: "dr.johnson@doctor.com",
+      firstName: "Sarah",
+      lastName: "Johnson",
+      phone: "+1234567891",
+      role: USER_ROLE.DOCTOR,
       doctorProfile: {
         create: {
-          specialty: 'General Practice',
+          specialty: "General Practice",
           experience: 10,
-          consultationPrice: 100.00,
-          description: 'General practitioner with expertise in family medicine',
+          consultationPrice: 100.0,
+          description: "General practitioner with expertise in family medicine",
         },
       },
     },
@@ -45,17 +46,17 @@ async function main() {
 
   const drWilliams = await prisma.user.create({
     data: {
-      email: 'dr.williams@doctor.com',
-      firstName: 'Michael',
-      lastName: 'Williams',
-      phone: '+1234567892',
-      role: UserRole.DOCTOR,
+      email: "dr.williams@doctor.com",
+      firstName: "Michael",
+      lastName: "Williams",
+      phone: "+1234567892",
+      role: USER_ROLE.DOCTOR,
       doctorProfile: {
         create: {
-          specialty: 'Pediatrics',
+          specialty: "Pediatrics",
           experience: 8,
-          consultationPrice: 120.00,
-          description: 'Pediatrician specializing in child healthcare',
+          consultationPrice: 120.0,
+          description: "Pediatrician specializing in child healthcare",
         },
       },
     },
@@ -64,35 +65,35 @@ async function main() {
   // Create patients
   const patient1 = await prisma.user.create({
     data: {
-      email: 'alice.patient@email.com',
-      firstName: 'Alice',
-      lastName: 'Brown',
-      phone: '+1234567893',
-      role: UserRole.PATIENT,
+      email: "alice.patient@email.com",
+      firstName: "Alice",
+      lastName: "Brown",
+      phone: "+1234567893",
+      role: USER_ROLE.PATIENT,
     },
   });
 
   const patient2 = await prisma.user.create({
     data: {
-      email: 'bob.patient@email.com',
-      firstName: 'Bob',
-      lastName: 'Davis',
-      phone: '+1234567894',
-      role: UserRole.PATIENT,
+      email: "bob.patient@email.com",
+      firstName: "Bob",
+      lastName: "Davis",
+      phone: "+1234567894",
+      role: USER_ROLE.PATIENT,
     },
   });
 
   const patient3 = await prisma.user.create({
     data: {
-      email: 'charlie.patient@email.com',
-      firstName: 'Charlie',
-      lastName: 'Wilson',
-      phone: '+1234567895',
-      role: UserRole.PATIENT,
+      email: "charlie.patient@email.com",
+      firstName: "Charlie",
+      lastName: "Wilson",
+      phone: "+1234567895",
+      role: USER_ROLE.PATIENT,
     },
   });
 
-  console.log('✅ Created 3 doctors and 3 patients');
+  console.log("✅ Created 3 doctors and 3 patients");
 
   // Create some sample appointments
   const tomorrow = new Date();
@@ -108,8 +109,8 @@ async function main() {
       doctorId: drSmith.id,
       startTime: tomorrow,
       endTime: new Date(tomorrow.getTime() + 60 * 60 * 1000), // 1 hour later
-      status: AppointmentStatus.SCHEDULED,
-      notes: 'Regular cardiac checkup',
+      status: APPOINTMENT_STATUS.SCHEDULED,
+      notes: "Regular cardiac checkup",
     },
   });
 
@@ -119,8 +120,8 @@ async function main() {
       doctorId: drJohnson.id,
       startTime: new Date(tomorrow.getTime() + 2 * 60 * 60 * 1000), // 2 hours later
       endTime: new Date(tomorrow.getTime() + 3 * 60 * 60 * 1000), // 3 hours later
-      status: AppointmentStatus.SCHEDULED,
-      notes: 'General health consultation',
+      status: APPOINTMENT_STATUS.SCHEDULED,
+      notes: "General health consultation",
     },
   });
 
@@ -130,12 +131,12 @@ async function main() {
       doctorId: drWilliams.id,
       startTime: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
       endTime: new Date(Date.now() - 23 * 60 * 60 * 1000), // 23 hours ago
-      status: AppointmentStatus.COMPLETED,
-      notes: 'Child wellness checkup - completed successfully',
+      status: APPOINTMENT_STATUS.COMPLETED,
+      notes: "Child wellness checkup - completed successfully",
     },
   });
 
-  console.log('✅ Created sample appointments');
+  console.log("✅ Created sample appointments");
 
   // Create a sample prescription for the completed appointment
   const prescription = await prisma.prescription.create({
@@ -143,57 +144,58 @@ async function main() {
       appointmentId: completedAppointment.id,
       patientId: patient3.id,
       doctorId: drWilliams.id,
-      diagnosis: 'Common cold with mild fever',
-      instructions: 'Rest well, stay hydrated, and take medications as prescribed. Follow up if symptoms persist.',
+      diagnosis: "Common cold with mild fever",
+      instructions:
+        "Rest well, stay hydrated, and take medications as prescribed. Follow up if symptoms persist.",
       medications: {
         create: [
           {
-            name: 'Acetaminophen',
-            dosage: '500mg',
-            frequency: 'Every 6 hours as needed',
-            duration: '3 days',
-            notes: 'For fever and pain relief',
+            name: "Acetaminophen",
+            dosage: "500mg",
+            frequency: "Every 6 hours as needed",
+            duration: "3 days",
+            notes: "For fever and pain relief",
           },
           {
-            name: 'Cough syrup',
-            dosage: '10ml',
-            frequency: 'Twice daily',
-            duration: '5 days',
-            notes: 'Take after meals',
+            name: "Cough syrup",
+            dosage: "10ml",
+            frequency: "Twice daily",
+            duration: "5 days",
+            notes: "Take after meals",
           },
         ],
       },
     },
   });
 
-  console.log('✅ Created sample prescription');
+  console.log("✅ Created sample prescription");
 
   // Log created data for easy reference
-  console.log('\n📋 Created User IDs:');
-  console.log('Doctors:');
+  console.log("\n📋 Created User IDs:");
+  console.log("Doctors:");
   console.log(`  Dr. Smith (Cardiology): ${drSmith.id}`);
   console.log(`  Dr. Johnson (General Practice): ${drJohnson.id}`);
   console.log(`  Dr. Williams (Pediatrics): ${drWilliams.id}`);
-  
-  console.log('\nPatients:');
+
+  console.log("\nPatients:");
   console.log(`  Alice Brown: ${patient1.id}`);
   console.log(`  Bob Davis: ${patient2.id}`);
   console.log(`  Charlie Wilson: ${patient3.id}`);
 
-  console.log('\n📅 Appointment IDs:');
+  console.log("\n📅 Appointment IDs:");
   console.log(`  Scheduled Appointment 1: ${appointment1.id}`);
   console.log(`  Scheduled Appointment 2: ${appointment2.id}`);
   console.log(`  Completed Appointment: ${completedAppointment.id}`);
 
-  console.log('\n💊 Prescription ID:');
+  console.log("\n💊 Prescription ID:");
   console.log(`  Sample Prescription: ${prescription.id}`);
 
-  console.log('\n🎉 Database seeding completed successfully!');
+  console.log("\n🎉 Database seeding completed successfully!");
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error during seeding:', e);
+    console.error("❌ Error during seeding:", e);
     process.exit(1);
   })
   .finally(async () => {

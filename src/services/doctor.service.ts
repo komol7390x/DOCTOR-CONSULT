@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { USER_ROLE } from "../core/enums";
 import { getDoctorsQuerySchema } from "../database/doctor.schema";
 
-
 const prisma = new PrismaClient();
 
 export class DoctorService {
@@ -71,7 +70,7 @@ export class DoctorService {
         },
       },
       orderBy: {
-        startTime: "asc",
+        createdAt: "desc",
       },
     });
 

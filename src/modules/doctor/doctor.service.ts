@@ -57,7 +57,7 @@ export class DoctorService {
         take: parsedLimit,
         skip: parsedSkip,
         orderBy: {
-          firstName: "asc",
+          createdAt: "desc",
         },
       }),
       prisma.user.count({ where }),
@@ -95,7 +95,7 @@ export class DoctorService {
         take: parsedLimit,
         skip: parsedSkip,
         orderBy: {
-          firstName: "asc",
+          createdAt: "desc",
         },
       }),
       prisma.user.count({ where }),
@@ -144,7 +144,7 @@ export class DoctorService {
         },
       },
       orderBy: {
-        startTime: "asc",
+        createdAt: "desc",
       },
     });
 

@@ -5,6 +5,7 @@ import { ERROR_MESSAGES } from "../../core/constants/error-messages";
 const doctorService = new DoctorService();
 
 export class DoctorController {
+  
   async getDoctors(request: FastifyRequest, reply: FastifyReply) {
     const result = await doctorService.getDoctors(request.query);
     return reply.status(200).send(result);

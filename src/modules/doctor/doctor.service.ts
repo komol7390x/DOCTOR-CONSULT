@@ -4,7 +4,6 @@ import {
   getPatientsQuerySchema,
 } from "../../database/doctor.schema";
 import { USER_ROLE } from "../../core/enums";
-import { ERROR_MESSAGES } from "../../core/constants/error-messages";
 import {
   parsePaginationQuery,
   createPaginationMeta,

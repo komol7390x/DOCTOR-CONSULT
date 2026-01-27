@@ -17,10 +17,6 @@ fastify.register(swaggerPlugin);
 fastify.register(doctorRoutes, { prefix: "/api/doctors" });
 fastify.register(appointmentRoutes, { prefix: "/api/appointments" });
 
-fastify.get("/health", async (request, reply) => {
-  return { status: "ok", timestamp: new Date().toISOString() };
-});
-
 fastify.setErrorHandler(allExceptionFilter);
 
 const start = async () => {
@@ -30,12 +26,8 @@ const start = async () => {
 
     await fastify.listen({ port, host });
 
-    console.log("\n" + "=".repeat(60));
-    console.log("🚀  SERVER STARTED SUCCESSFULLY");
-    console.log("=".repeat(60));
     console.log(`📍  API Server    : http://${host}:${port}`);
     console.log(`📚  Documentation : http://${host}:${port}/docs`);
-    console.log(`❤️   Health Check : http://${host}:${port}/health`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

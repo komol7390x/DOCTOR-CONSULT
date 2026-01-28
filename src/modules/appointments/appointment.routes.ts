@@ -4,6 +4,7 @@ import { AppointmentController } from "./appointment.controller";
 const appointmentController = new AppointmentController();
 
 export default async function appointmentRoutes(fastify: FastifyInstance) {
+  
   fastify.post(
     "/",
     {

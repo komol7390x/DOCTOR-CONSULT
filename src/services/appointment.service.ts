@@ -12,7 +12,6 @@ export class AppointmentService {
     const endTime = new Date(appointmentData.endTime);
     const now = new Date();
 
-    // Validate time logic
     if (startTime <= now) {
       throw new Error("Cannot book appointments in the past");
     }
@@ -21,7 +20,6 @@ export class AppointmentService {
       throw new Error("End time must be after start time");
     }
 
-    // Check if doctor exists and is a doctor
     const doctor = await prisma.user.findFirst({
       where: {
         id: appointmentData.doctorId,
@@ -33,7 +31,6 @@ export class AppointmentService {
       throw new Error("The specified doctor does not exist");
     }
 
-    // Check if patient exists and is a patient
     const patient = await prisma.user.findFirst({
       where: {
         id: appointmentData.patientId,
@@ -45,7 +42,6 @@ export class AppointmentService {
       throw new Error("The specified patient does not exist");
     }
 
-    // Check for time conflicts
     const conflictingAppointment = await prisma.appointment.findFirst({
       where: {
         doctorId: appointmentData.doctorId,
@@ -152,7 +148,6 @@ export class AppointmentService {
       );
     }
 
-    // Check if prescription already exists for this appointment
     const existingPrescription = await prisma.prescription.findFirst({
       where: { appointmentId },
     });

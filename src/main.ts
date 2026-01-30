@@ -1,55 +1,21 @@
-import "dotenv/config";
-import Fastify from "fastify";
-import { PrismaClient } from "@prisma/client";
-import swaggerPlugin from "./plugins/swagger";
-import { allExceptionFilter } from "./core/error-handle/all-exception.filter";
-import doctorRoutes from "./modules/doctor/doctor.routes";
-import appointmentRoutes from "./modules/appointments/appointment.routes";
+import fastify from "fastify";
 
-const fastify = Fastify({
-  logger: true,
+const app = fastify({
+//   logger: true,
 });
 
-export const prisma = new PrismaClient();
-
-fastify.register(swaggerPlugin);
-
-fastify.register(doctorRoutes, { prefix: "/api/doctors" });
-fastify.register(appointmentRoutes, { prefix: "/api/appointments" });
-
-fastify.setErrorHandler(allExceptionFilter);
+app.get("/", async () => {
+  return { message: "Doctor Consult API is running!" };
+});
 
 const start = async () => {
   try {
-    const port = parseInt(process.env.PORT || "3000");
-    const host = process.env.HOST || "localhost";
-
-    await fastify.listen({ port, host });
-
-    console.log(`📍  API Server    : http://${host}:${port}`);
-    console.log(`📚  Documentation : http://${host}:${port}/docs`);
-  } catch (err) {
-    fastify.log.error(err);
+    await app.listen({ port: 3000, host: "0.0.0.0" });
+    console.log("🚀 Server running at http://localhost:3000");
+  } catch (error) {
+    app.log.error(error);
     process.exit(1);
   }
 };
-
-process.on("SIGINT", async () => {
-  console.log("\n" + "=".repeat(60));
-  console.log("👋  Shutting down gracefully...");
-  console.log("=".repeat(60) + "\n");
-  await fastify.close();
-  await prisma.$disconnect();
-  process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-  console.log("\n" + "=".repeat(60));
-  console.log("👋  Shutting down gracefully...");
-  console.log("=".repeat(60) + "\n");
-  await fastify.close();
-  await prisma.$disconnect();
-  process.exit(0);
-});
 
 start();

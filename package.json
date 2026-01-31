@@ -1,12 +1,14 @@
 {
   "name": "doctor-consult",
   "version": "1.0.0",
-  "type": "module",
+  "description": "A fastify-based doctor consultation application",
+  "main": "main.js",
+  "types": "module",
   "scripts": {
     "build": "tsc",
     "dev": "node --loader ts-node/esm --watch src/main.ts",
     "start": "npm run build && node dist/main.js",
-    "start:dev": "tsc-watch --onSuccess \"node dist/main.js\""
+    "start:dev": "tsc-watch --onSuccess \"node dist/src/main.js\""
   },
   "dependencies": {
     "@fastify/autoload": "^6.3.1",
@@ -18,5 +20,17 @@
     "ts-node": "^10.9.2",
     "tsc-watch": "^7.2.0",
     "typescript": "^5.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/komol7390x/DOCTOR-CONSULT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/komol7390x/DOCTOR-CONSULT/issues"
+  },
+  "homepage": "https://github.com/komol7390x/DOCTOR-CONSULT#readme"
 }

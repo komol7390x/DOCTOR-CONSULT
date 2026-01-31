@@ -1,20 +1,28 @@
-import Fastify from "fastify";
-import routes from "./our.js";
+import Fastify from 'fastify';
+import fastifyCookie from '@fastify/cookie';
+import { prisma } from './database/prisma';
+import { TokenService } from 'common/token/token';
+
 const fastify = Fastify({
-  logger: true,
+  logger: true
 });
 
-fastify.get("/", async () => {
-  return { message: "Doctor Consult API is running!" };
+fastify.register(fastifyCookie, {
+  secret: 'Prisma-fastify',
+  parseOptions: {}
 });
-// fastify.register(routes, { prefix: "/v1" });
+
+TokenService.init(fastify);
+
+fastify.decorate('prisma', prisma);
 const start = async () => {
   try {
-    await fastify.listen({ port: 3030, host: "0.0.0.0" });
-    console.log("🚀 Server running at http://localhost:3030");
+    await fastify.listen({ port: 3030, host: '0.0.0.0' });
+    console.log('\x1b[36m%s\x1b[0m', '🚀 Fastify server is flying on http://localhost:3030');
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
 };
+
 start();

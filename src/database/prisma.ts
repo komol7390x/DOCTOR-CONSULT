@@ -1,23 +1,30 @@
-import 'dotenv/config';
+import fp from 'fastify-plugin';
 import pg from 'pg';
 import { PrismaClient } from '../../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { config } from 'config/config';
+import { config } from '../config/config';
 
-const pool = new pg.Pool({ connectionString: config.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-export const prisma = globalForPrisma.prisma || new PrismaClient({ adapter });
+declare module 'fastify' {
+  interface FastifyInstance {
+    prisma: PrismaClient;
+  }
+}
 
-if (config.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+export default fp(async (fastify) => {
+  const pool = new pg.Pool({ connectionString: config.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
 
-(async () => {
+  const prismaInstance = new PrismaClient({ adapter });
+
   try {
-    await prisma.$connect();
-    console.log('\x1b[32m%s\x1b[0m', '📂 Prisma: Database connected successfully');
+    await prismaInstance.$connect();
+    fastify.decorate('prisma', prismaInstance);
+    fastify.addHook('onClose', async (instance) => {
+      await instance.prisma.$disconnect();
+      await pool.end();
+    });
   } catch (error) {
-    console.error('\x1b[31m%s\x1b[0m', '❌ Prisma: Database connection failed!');
-    console.error(error);
+    fastify.log.error({ err: error }, 'Prisma connection failed');
     process.exit(1);
   }
-})();
+});

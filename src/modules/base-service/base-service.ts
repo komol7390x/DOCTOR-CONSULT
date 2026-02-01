@@ -1,15 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import Error from 'http-errors';
 
-// T - Entity (Model), C - Create input, U - Update input, D - Prisma Delegate
 export class BaseService<T extends { id: string | number }, C, U, D> {
   constructor(
     protected readonly fastify: FastifyInstance,
     protected readonly delegate: D
   ) {}
 
-  // Bu yerda 'any' dan qochib bo'lmaydi, chunki Prisma delegatlari
-  // umumiy interfeysga ega emas, lekin biz uni 'private' qilib yashiramiz
   private get model(): any {
     return this.delegate;
   }
@@ -99,5 +96,14 @@ export class BaseService<T extends { id: string | number }, C, U, D> {
       where: { id },
       data: updateData
     });
+  }
+
+  static success<T>(data: T, statusCode: number = 200) {
+    return {
+      success: true,
+      statusCode,
+      message: 'success',
+      data
+    };
   }
 }

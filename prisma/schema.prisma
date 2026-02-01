@@ -1,54 +1,53 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")
-}
-
-enum Role {
-  Admin
-  Client
 }
 
 model Admin {
-  id        Int       @id @default(autoincrement())
-  isActive  Boolean?  @default(true)
-  isDeleted Boolean?  @default(false)
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-
+  id          Int       @id @default(autoincrement())
+  isActive    Boolean?  @default(true)
+  isDeleted   Boolean?  @default(false)
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
   username    String    @unique @db.VarChar(128)
   fullname    String?   @db.VarChar(128)
   password    String    @db.VarChar(256)
   phoneNumber String    @unique @db.VarChar(15)
-  avatrUrl    String?   @db.Text
+  avatrUrl    String?
   role        Role      @default(Admin)
   products    Product[]
 
   @@index([username])
   @@index([phoneNumber])
   @@index([fullname])
+  @@map("admin")
 }
 
 model Product {
-  id        Int       @id @default(autoincrement())
-  isActive  Boolean?  @default(true)
-  isDeleted Boolean?  @default(false)
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  id          Int       @id @default(autoincrement())
+  isActive    Boolean?  @default(true)
+  isDeleted   Boolean?  @default(false)
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  title       String    @db.VarChar(128)
+  rating      Int?      @default(0) @db.SmallInt
+  description String?
+  price       Int
+  amout       Int
+  isPublished Boolean
+  viewCount   Int
+  salesCount  Int
+  adminId     Int
+  admin       Admin     @relation(fields: [adminId], references: [id])
 
-  title       String  @db.VarChar(128)
-  rating      Int?    @default(0) @db.SmallInt
-  description String? @db.Text
-  price       Int     @db.Integer
-  amout       Int     @db.Integer
-  isPublished Boolean @db.Boolean
-  viewCount   Int     @db.Integer
-  salesCount  Int     @db.Integer
+  @@map("product")
+}
 
-  adminId Int   @db.Integer
-  admin   Admin @relation(fields: [adminId], references: [id])
+enum Role {
+  Admin
+  Client
 }

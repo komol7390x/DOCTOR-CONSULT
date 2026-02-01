@@ -1,6 +1,6 @@
 export interface IToken {
   id?: number;
-  isActive?: boolean;
+  isActive?: boolean | null;
   role?: string;
   iat?: string;
   exp?: string;

@@ -1,10 +1,7 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
-import prismaPlugin from './database/prisma';
-import authGuardPlugin from 'plugin/guard/auth.guard';
-import rolesGuardPlugin from 'plugin/guard/role.guard';
-import tokenPlugin from './plugin/token/token';
-import jwt from '@fastify/jwt';
+import adminRoutes from 'modules/identity/admin/admin.routes';
+import mainPlugin from './plugin/index.js';
 class App {
   public fastify: FastifyInstance;
 
@@ -23,16 +20,8 @@ class App {
 
   private async setup() {
     try {
-      await this.fastify.register(fastifyCookie, {
-        secret: 'Prisma-fastify',
-        parseOptions: {}
-      });
-
-      await this.fastify.register(prismaPlugin);
-      await this.fastify.register(jwt, { secret: 'Prisma-fastify' });
-      await this.fastify.register(tokenPlugin);
-      await this.fastify.register(authGuardPlugin);
-      await this.fastify.register(rolesGuardPlugin);
+      await this.fastify.register(mainPlugin);
+      await this.fastify.register(adminRoutes, { prefix: '/api/v1/admin' });
     } catch (error) {
       this.fastify.log.error({ err: error }, 'Setup error occurred');
     }

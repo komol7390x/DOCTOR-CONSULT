@@ -1,7 +1,6 @@
 import fp from 'fastify-plugin';
 import fastifyCookie from '@fastify/cookie';
-import { config } from '../config/config';
-
+import swaggerPlugin from './swagger/swagger';
 import cryptoPlugin from './crypto/crypto';
 import tokenPlugin from './token/token';
 import authGuardPlugin from './guard/auth.guard';
@@ -18,11 +17,10 @@ export default fp(async (fastify) => {
     secret: 'super-secret'
   });
   await fastify.register(cryptoPlugin);
-
   await fastify.register(tokenPlugin);
-
   await fastify.register(authGuardPlugin);
   await fastify.register(rolesGuardPlugin);
+  await fastify.register(swaggerPlugin);
 
-  fastify.log.info('🚀 All core plugins registered successfully');
+  fastify.log.info('All core plugins registered successfully');
 });

@@ -2,6 +2,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
+  PORT: Number(process.env.PORT),
+  APP_VERSION: String(process.env.APP_VERSION),
+  URL: String(process.env.URL),
   DATABASE_URL: String(process.env.DATABASE_URL),
   NODE_ENV: String(process.env.NODE_ENV),
   TOKEN: {

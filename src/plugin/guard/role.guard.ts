@@ -2,6 +2,7 @@ import { IToken } from 'common/type/IToken';
 import { FastifyRequest } from 'fastify';
 import createError from 'http-errors';
 import fp from 'fastify-plugin';
+import { Roles } from 'config/Roles';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -25,7 +26,7 @@ export default fp(async (fastify) => {
     if (!roles || roles.length == 0) {
       throw createError(403, 'Access Denied: No roles defined for this route');
     }
-    if (roles.includes('public')) {
+    if (roles.includes(Roles.PUBLIC)) {
       return;
     }
 

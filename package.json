@@ -13,8 +13,11 @@
   "dependencies": {
     "@eslint/js": "^9.39.2",
     "@fastify/autoload": "^6.3.1",
+    "@fastify/basic-auth": "^6.2.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/jwt": "^10.0.0",
+    "@fastify/swagger": "^9.6.1",
+    "@fastify/swagger-ui": "^5.2.5",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "bcrypt": "^6.0.0",

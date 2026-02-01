@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { TokenName } from '../../config/token-name';
 import Error from 'http-errors';
-import prisma from '../../database/prisma';
 import { config } from 'config/config';
 import fp from 'fastify-plugin';
+import { Roles } from 'config/Roles';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -34,7 +34,7 @@ export default fp(async (fastify) => {
       };
 
       const newAccessToken = await fastify.tokenPlugin.accessToken(newPayload);
-      fastify.tokenPlugin.writeCookie(reply, config.TOKEN.ACCESS_TOKEN_KEY, newAccessToken);
+      fastify?.tokenPlugin?.writeCookie(reply, config.TOKEN.ACCESS_TOKEN_KEY, newAccessToken);
 
       request.user = newPayload;
     } catch (err) {
@@ -43,9 +43,10 @@ export default fp(async (fastify) => {
   };
 
   const authGuardPlugin = async (request: FastifyRequest, reply: FastifyReply) => {
-    const roles = request.routeOptions.config.roles as string[];
+    const config = request.routeOptions.config;
+    const roles = config?.roles;
 
-    if (roles?.includes('public')) {
+    if (roles?.includes(Roles.PUBLIC)) {
       return;
     }
 

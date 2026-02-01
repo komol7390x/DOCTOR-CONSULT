@@ -1,4 +1,4 @@
-import { IToken } from 'common/type/IToken';
+import { IToken } from 'common/type/IToken.type';
 import { FastifyRequest } from 'fastify';
 import createError from 'http-errors';
 import fp from 'fastify-plugin';

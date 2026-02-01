@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import { FastifyInstance, FastifyReply } from 'fastify';
-import { IToken } from 'common/type/IToken';
+import { IToken } from 'common/type/IToken.type';
 import { config } from 'config/config';
 import jwt from '@fastify/jwt';
 

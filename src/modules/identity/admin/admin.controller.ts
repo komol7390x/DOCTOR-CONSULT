@@ -2,39 +2,24 @@ import { TokenName } from 'config/token-name';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class AdminController {
-  static async login(request: FastifyRequest, reply: FastifyReply) {
-    const { username, password } = request.body as any;
+  
+  static async create(request: FastifyRequest, reply: FastifyReply) {}
 
-    const admin = await request.server.prisma.admin.findUnique({ where: { username } });
-    if (!admin) throw new Error('Admin topilmadi');
+  static async signIn(request: FastifyRequest, reply: FastifyReply) {}
 
-    const isMatch = await request.server.crypto.compare(password, admin.password);
-    if (!isMatch) throw new Error('Parol noto`g`ri');
+  static async logOut(request: FastifyRequest) {}
 
-    const payload = {
-      id: admin.id,
-      role: admin.role,
-      isActive: admin.isActive
-    };
-    const token = await request.server.tokenPlugin.accessToken(payload);
-    request.server.tokenPlugin.writeCookie(reply, TokenName.ACCESS, token);
+  static async getAll(request: FastifyRequest, reply: FastifyReply) {}
 
-    return { success: true, admin: { username: admin.username, role: admin.role } };
-  }
+  static async getOne(request: FastifyRequest, reply: FastifyReply) {}
 
-  static async getAll(request: FastifyRequest) {
-    return await request.server.prisma.admin.findMany({
-      select: {
-        id: true,
-        fullname: true,
-        isActive: true,
-        username: true
-      }
-    });
-  }
+  static async detailsMe(request: FastifyRequest, reply: FastifyReply) {}
 
-  static async logout(request: FastifyRequest, reply: FastifyReply) {
-    reply.clearCookie(TokenName.ACCESS);
-    return { success: true, message: 'Tizimdan chiqildi' };
-  }
+  static async update(request: FastifyRequest) {}
+
+  static async isActive(request: FastifyRequest, reply: FastifyReply) {}
+
+  static async softDelete(request: FastifyRequest, reply: FastifyReply) {}
+
+  static async hardDelete(request: FastifyRequest, reply: FastifyReply) {}
 }

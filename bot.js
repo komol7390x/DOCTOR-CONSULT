@@ -10,6 +10,10 @@ const ADMIN_ID = process.env.ADMIN_ID;
 const fastify = Fastify({ logger: false });
 const bot = new Telegraf(BOT_TOKEN);
 
+bot.on("message", (ctx) => {
+  console.log("Chat ID:", ctx.chat.id);
+});
+
 bot.on("text", async (ctx) => {
   const originalText = ctx.message.text;
 

@@ -1,7 +1,13 @@
 import { Telegraf } from "telegraf";
 
-const BOT_TOKEN = "8576420482:AAFMlta6i3ssJmWiVFEO3Ys47NUFi-Le5ck";
+const BOT_TOKEN = "8519480277:AAFpudhBHsP12CgMCbxkJ_IgKrB98ptuIWg";
 const bot = new Telegraf(BOT_TOKEN);
+
+bot.on("message", (ctx) => {
+  const topicId = ctx.message.message_thread_id;
+  console.log("Topic ID:", topicId);
+  console.log("Chat ID:", ctx.chat.id);
+});
 
 bot.on("message", async (ctx) => {
   console.log("--- XABAR KELDI ---");

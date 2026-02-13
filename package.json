@@ -2,7 +2,7 @@
   "name": "doctor-consult",
   "version": "1.0.0",
   "description": "A fastify-based doctor consultation application",
-  "main": "dist/src/main.js",
+  "main": "dist/main.js",
   "type": "module",
   "scripts": {
     "build": "tsc",

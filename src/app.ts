@@ -11,7 +11,8 @@ class App {
 
   constructor() {
     this.fastify = Fastify({
-      logger: this.logger
+      logger: true,
+      trustProxy: true
     });
   }
 
@@ -29,7 +30,7 @@ class App {
 
       const address = await this.fastify.listen({
         port: config.PORT,
-        host: config.URL
+        host: config.HOST
       });
 
       console.log('\x1b[36m%s\x1b[0m', `🚀 Fastify server is flying on ${address}/api/v1`);
